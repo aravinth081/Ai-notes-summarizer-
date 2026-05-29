@@ -1,36 +1,179 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+ # 📚 AI Notes Summarizer
 
-## Getting Started
+> Transform lengthy notes and PDFs into concise summaries, key points, and exam-ready answers using AI.
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-16-black)
+![React](https://img.shields.io/badge/React-19-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+
+---
+
+## 🚀 Overview
+
+AI Notes Summarizer is an intelligent learning platform that helps students quickly understand large documents, lecture notes, and PDFs.
+
+Simply upload your study material and receive:
+
+* 📝 Short Summary
+* 🎯 Important Key Points
+* 📚 Exam Notes
+* ❓ 2-Mark Questions
+* 📖 16-Mark Answers
+* 🔍 Topic Extraction
+
+Perfect for students preparing for university exams and competitive tests.
+
+---
+
+## ✨ Features
+
+### 📄 PDF Upload
+
+Upload notes, study materials, and PDFs.
+
+### 🤖 AI Summarization
+
+Generate concise and easy-to-understand summaries.
+
+### 🎯 Important Points Extraction
+
+Automatically identify crucial concepts.
+
+### ❓ Question Generation
+
+Generate:
+
+* 2 Mark Questions
+* 5 Mark Questions
+* 16 Mark Questions
+
+### 📚 Exam Preparation Mode
+
+Create revision notes instantly.
+
+### 🌙 Modern UI
+
+Responsive and clean interface built with Next.js and Tailwind CSS.
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+
+* Next.js 16
+* React 19
+* TypeScript
+* Tailwind CSS
+* Framer Motion
+
+### UI Components
+
+* Radix UI
+* Lucide Icons
+* Sonner Toasts
+
+### File Handling
+
+* React Dropzone
+
+---
+
+## 📂 Project Structure
+
+```text
+src/
+├── app/
+├── components/
+├── hooks/
+├── lib/
+├── types/
+└── utils/
+```
+
+---
+
+## ⚙️ Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/ai-notes-summarizer.git
+cd ai-notes-summarizer
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🎯 Use Cases
 
-To learn more about Next.js, take a look at the following resources:
+* College Students
+* University Exam Preparation
+* Competitive Exam Aspirants
+* Teachers & Faculty
+* Researchers
+* Online Learning Platforms
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📸 Screenshots
 
-## Deploy on Vercel
+Add your screenshots here:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Dashboard
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+![Dashboard](screenshots/dashboard.png)
+
+### PDF Upload
+
+![Upload](screenshots/upload.png)
+
+### AI Summary
+
+![Summary](screenshots/summary.png)
+
+---
+
+## 🚀 Future Enhancements
+
+* PDF Chat Assistant
+* Voice Notes Summarization
+* Multi-language Support
+* Flashcard Generation
+* Mind Map Generation
+* MCQ Generator
+* AI Tutor Chatbot
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome.
+
+1. Fork the project
+2. Create your feature branch
+3. Commit your changes
+4. Push your branch
+5. Open a Pull Request
+
+ 
+
+⭐ Star this repository if you found it useful!
