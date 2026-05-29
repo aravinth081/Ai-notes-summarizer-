@@ -1,0 +1,258 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum SubscriptionPlan {
+  FREE
+  PRO
+  TEAM
+}
+
+enum FileType {
+  PDF
+  DOCX
+  PPT
+  TXT
+  IMAGE
+  ZIP
+}
+
+enum AIGenerationType {
+  SUMMARY
+  TWO_MARK
+  SIXTEEN_MARK
+  MCQ
+  FLASHCARD
+  MINDMAP
+  CHAT
+  VOICE
+  IMPORTANT_QUESTIONS
+}
+
+// ============================================
+// MODELS
+// ============================================
+
+model User {
+  id              String           @id @default(cuid())
+  email           String           @unique
+  name            String?
+  avatarUrl       String?
+  role            Role             @default(USER)
+  plan            SubscriptionPlan @default(FREE)
+  aiCreditsUsed   Int              @default(0)
+  aiCreditsLimit  Int              @default(50)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  files           File[]
+  aiGenerations   AIGeneration[]
+  chatSessions    ChatSession[]
+  flashcardDecks  FlashcardDeck[]
+  quizAttempts    QuizAttempt[]
+  studyPlans      StudyPlan[]
+  payments        Payment[]
+  subscriptions   Subscription[]
+
+  @@map("users")
+}
+
+model File {
+  id            String   @id @default(cuid())
+  userId        String
+  fileName      String
+  originalName  String
+  fileType      FileType
+  fileSize      Int
+  fileUrl       String
+  extractedText String?  @db.Text
+  isProcessed   Boolean  @default(false)
+  chapterCount  Int      @default(0)
+  category      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  aiGenerations AIGeneration[]
+  chatSessions  ChatSession[]
+  chunks        TextChunk[]
+
+  @@index([userId])
+  @@map("files")
+}
+
+model TextChunk {
+  id         String   @id @default(cuid())
+  fileId     String
+  content    String   @db.Text
+  chunkIndex Int
+  embedding  String?  @db.Text
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  file File @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@index([fileId])
+  @@map("text_chunks")
+}
+
+model AIGeneration {
+  id             String           @id @default(cuid())
+  userId         String
+  fileId         String
+  type           AIGenerationType
+  input          String?          @db.Text
+  output         String           @db.Text
+  model          String           @default("gpt-4o")
+  tokensUsed     Int              @default(0)
+  processingTime Int              @default(0)
+  createdAt      DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  file File @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([fileId])
+  @@map("ai_generations")
+}
+
+model ChatSession {
+  id        String        @id @default(cuid())
+  userId    String
+  fileId    String
+  title     String        @default("New Chat")
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  file     File          @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  messages ChatMessage[]
+
+  @@index([userId])
+  @@map("chat_sessions")
+}
+
+model ChatMessage {
+  id        String      @id @default(cuid())
+  sessionId String
+  role      String
+  content   String      @db.Text
+  sources   Json?
+  createdAt DateTime    @default(now())
+
+  session ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@map("chat_messages")
+}
+
+model FlashcardDeck {
+  id          String      @id @default(cuid())
+  userId      String
+  title       String
+  description String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  user  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cards Flashcard[]
+
+  @@index([userId])
+  @@map("flashcard_decks")
+}
+
+model Flashcard {
+  id         String        @id @default(cuid())
+  deckId     String
+  front      String        @db.Text
+  back       String        @db.Text
+  difficulty Int           @default(0)
+  nextReview DateTime      @default(now())
+  interval   Int           @default(1)
+  createdAt  DateTime      @default(now())
+
+  deck FlashcardDeck @relation(fields: [deckId], references: [id], onDelete: Cascade)
+
+  @@index([deckId])
+  @@map("flashcards")
+}
+
+model QuizAttempt {
+  id             String   @id @default(cuid())
+  userId         String
+  fileId         String?
+  score          Int
+  totalQuestions Int
+  timeTaken      Int
+  answers        Json
+  createdAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("quiz_attempts")
+}
+
+model StudyPlan {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  examDate  DateTime
+  dailyGoals Json
+  streak    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("study_plans")
+}
+
+model Subscription {
+  id               String           @id @default(cuid())
+  userId           String
+  plan             SubscriptionPlan
+  status           String           @default("active")
+  stripeCustomerId String?
+  stripeSubId      String?
+  currentPeriodEnd DateTime?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("subscriptions")
+}
+
+model Payment {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Int
+  currency  String   @default("usd")
+  status    String   @default("pending")
+  provider  String
+  providerId String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("payments")
+}
